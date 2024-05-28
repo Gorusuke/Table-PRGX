@@ -10,15 +10,22 @@ export const GetDataContext = ({ children }) => {
   const [addNewData, setAddNewData] = useState(false)
   const [debounceValue] = useDebounce(search, 500)
   const { data, loading } = useGetData({ search: debounceValue })
-
+  const [editData, setEditData] = useState({
+    title: '',
+    description: '',
+    id: ''
+  })
+  
   return (
     <DataContext.Provider value={{ 
       data,
       loading,
       addNewData, 
       search,
+      editData,
       setSearch,
       setAddNewData,
+      setEditData
     }}>
       {children}
     </DataContext.Provider>
