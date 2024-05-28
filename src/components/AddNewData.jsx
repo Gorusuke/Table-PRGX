@@ -1,10 +1,14 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
+import { DataContext } from '../context/DataContext'
+import { Button } from '@mui/material'
+import { URL } from '../constants'
 import '../App.css'
 
 const AddNewData = () => {
+  const { setAddNewData, editData, setEditData } = useContext(DataContext)
   const [formData, setFormData] = useState({
-    title: '',
-    description: ''
+    title: editData.title ?? '',
+    description: editData.description ?? ''
   })
 
   const handleOnSubmit = async (e) => {
@@ -13,16 +17,48 @@ const AddNewData = () => {
       alert('All fields are required')
       return
     }
-    const newData = JSON.parse(window.localStorage.getItem('new-data')) || []
-    const addNewData = [{...formData, id: (newData.length ? newData.at(-1)[0].id : 100) + 1}]
-    newData.push(addNewData)
-    window.localStorage.setItem('new-data', JSON.stringify(newData))
+    // best option
+    const createNewPostUrl = `${URL}/posts`
+    const updatePostUrl = `${URL}/posts/${editData.id}`
+    const finalUrl = editData.id ? updatePostUrl : createNewPostUrl
+
+    const response = await fetch(finalUrl, {
+      method: editData.id ? 'PUT' : 'POST',
+      body: JSON.stringify({
+        title: formData.title,
+        body: formData.description,
+        userId: 1,
+      }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      }
+    })
+    const result = await response.json()
+    console.log(result)
+
+    // option 2
+    if(editData.id) {
+      // update localStorage
+      console.log('hola')
+    } else {
+      const newData = JSON.parse(window.localStorage.getItem('new-data')) || []
+      const addNewData = [{...formData, id: (newData.length ? newData.at(-1)[0].id : 100) + 1}]
+      newData.push(addNewData)
+      window.localStorage.setItem('new-data', JSON.stringify(newData))
+    }
     setFormData({ title: '', description: '' })
+    setEditData({title: '', description: '', id: ''})
+    setAddNewData(false)
+  }
+
+  const handleCancel = () => {
+    setEditData({title: '', description: '', id: ''})
+    setAddNewData(false)
   }
 
   return (
     <>
-      <form className='form' onSubmit={handleOnSubmit}>
+      <form className='form'>
         <div className='input-container'>
           <label htmlFor="title">Title:</label>
           <input 
@@ -43,7 +79,10 @@ const AddNewData = () => {
             onChange={(e) => setFormData(prev => ({...prev, description: e.target.value}))}
           />
         </div>
-        <button>Enviar</button>
+        <div className='buttons-container'>
+          <Button size='small' color='error' variant='contained' onClick={handleCancel}>Cancelar</Button>
+          <Button size='small' variant='contained' onClick={handleOnSubmit}>Enviar</Button>
+        </div>
       </form>
     </>
   )
