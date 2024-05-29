@@ -28,6 +28,13 @@
     border-radius: 30px;
     border: none;
   }
+
+  button {
+    b {
+      font-size: 20px;
+      margin-right: 8px;
+    }
+  }
 }
 
 .form {
@@ -59,5 +66,32 @@
     button {
       width: 100%;
     }
+  }
+}
+
+.row-detail-form {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  border: 1px solid #646cff;
+  padding: 3rem;
+  border-radius: 20px;
+  max-width: 400px;
+  position: relative;
+
+  button {
+    position: absolute;
+    right: 0;
+    top: -50px;
+  }
+
+  h3 {
+    letter-spacing: 1px;
+    color: #646cff;
+    margin-bottom: 8px;
+  }
+
+  p {
+    font-style: italic;
   }
 }
