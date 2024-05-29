@@ -12,7 +12,7 @@ import { EditICon, TrashICon } from '../icons/AllIcons.jsx';
 import { URL } from '../constants.js';
 
 const DataTable = () => {
-  const { data, setAddNewData, setEditData, setShowDataDetails, setRowDetails, setDataFromLocalStorage } = useContext(DataContext)
+  const { data, setAddNewData, setEditData, setShowDataDetails, setRowDetails, setDataFromLocalStorage, debounceValue } = useContext(DataContext)
   const [rowsPerPage, setRowsPerPage] = useState(15);
   const [page, setPage] = useState(0);
 
@@ -36,7 +36,6 @@ const DataTable = () => {
     const filteredData = data.filter(row => row.id !== id)
     window.localStorage.setItem('data', JSON.stringify(filteredData.filter(x => x.id <= 100)))
     window.localStorage.setItem('new-data', JSON.stringify(filteredData.filter(x => x.id > 100)))
-    console.log({filteredData});
     setDataFromLocalStorage(filteredData)
   }
 
@@ -56,7 +55,11 @@ const DataTable = () => {
     setRowDetails(rowData)
   }
 
-  const dataPerPage = data.slice(page * rowsPerPage, rowsPerPage * (page + 1))
+  const filteredData = data.filter(data => {
+    if(!debounceValue || !debounceValue.trim()) return data
+    return data.title.toLowerCase().includes(debounceValue.toLowerCase())
+  })
+  const dataPerPage = filteredData.slice(page * rowsPerPage, rowsPerPage * (page + 1))
 
   const ellipsiStyles = {
     textOverflow: 'ellipsis',
@@ -106,7 +109,7 @@ const DataTable = () => {
       <TablePagination
         rowsPerPageOptions={[5, 10, 15, 20, 25]}
         component="div"
-        count={data.length}
+        count={filteredData.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

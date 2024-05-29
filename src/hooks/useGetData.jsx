@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react'
 import { URL } from '../constants'
 
-export const useGetData = ({ search }) => {
+export const useGetData = () => {
   const [data, setData] = useState([]) // -> just to have all data from API
   const [loading, setLoading] = useState(false)
   const [dataFromLocalStorage, setDataFromLocalStorage] = useState(() => {
@@ -23,13 +23,7 @@ export const useGetData = ({ search }) => {
   }, [])
 
   // const dataStorage = [...data, ...dataFromLocalStorage] // good option but no the best
-
   const dataCallback = dataFromLocalStorage.length ? dataFromLocalStorage : data // just for the first render
-  const filteredData = dataCallback.filter(data => {
-    return data.title.toLowerCase().includes(search.toLowerCase())
-  })
-  const isSearching = !search || !search.trim()
-  const realData = isSearching ? dataCallback : filteredData
 
-  return { data: realData, loading, setDataFromLocalStorage }
+  return { data: dataCallback, loading, setDataFromLocalStorage }
 }

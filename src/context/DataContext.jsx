@@ -11,7 +11,7 @@ export const GetDataContext = ({ children }) => {
   const [showDataDetails, setShowDataDetails] = useState(false);
   const [rowDetails, setRowDetails] = useState({});
   const [debounceValue] = useDebounce(search, 500)
-  const { data, loading, setDataFromLocalStorage } = useGetData({ search: debounceValue })
+  const { data, loading, setDataFromLocalStorage } = useGetData()
   const [editData, setEditData] = useState({
     title: '',
     description: '',
@@ -32,7 +32,8 @@ export const GetDataContext = ({ children }) => {
       setSearch,
       setAddNewData,
       setEditData,
-      setDataFromLocalStorage
+      setDataFromLocalStorage,
+      debounceValue
     }}>
       {children}
     </DataContext.Provider>
