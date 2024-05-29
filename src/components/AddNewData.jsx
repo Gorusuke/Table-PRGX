@@ -58,6 +58,7 @@ const AddNewData = () => {
 
   return (
     <>
+      <h2>{editData.title ? 'Update' :'Add New'} Row</h2>
       <form className='form'>
         <div className='input-container'>
           <label htmlFor="title">Title:</label>
