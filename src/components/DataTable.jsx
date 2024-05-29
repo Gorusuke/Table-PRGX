@@ -12,7 +12,7 @@ import { EditICon, TrashICon } from '../icons/AllIcons.jsx';
 import { URL } from '../constants.js';
 
 const DataTable = () => {
-  const { data, setAddNewData, setEditData, setShowDataDetails, setRowDetails } = useContext(DataContext)
+  const { data, setAddNewData, setEditData, setShowDataDetails, setRowDetails, setDataFromLocalStorage } = useContext(DataContext)
   const [rowsPerPage, setRowsPerPage] = useState(15);
   const [page, setPage] = useState(0);
 
@@ -33,9 +33,11 @@ const DataTable = () => {
     await fetch(`${URL}/posts/${id}`, { method: 'DELETE' });
 
     // option 2
-    const filteredData = data.filter(row => row.id === id) // <- poner el !
-    // update localStorage
-    console.log(filteredData)
+    const filteredData = data.filter(row => row.id !== id)
+    window.localStorage.setItem('data', JSON.stringify(filteredData.filter(x => x.id <= 100)))
+    window.localStorage.setItem('new-data', JSON.stringify(filteredData.filter(x => x.id > 100)))
+    console.log({filteredData});
+    setDataFromLocalStorage(filteredData)
   }
 
   const handleEditRow = (e, row) => {

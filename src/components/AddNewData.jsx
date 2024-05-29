@@ -5,7 +5,7 @@ import { URL } from '../constants'
 import '../App.css'
 
 const AddNewData = () => {
-  const { setAddNewData, editData, setEditData } = useContext(DataContext)
+  const { setAddNewData, editData, setEditData, setDataFromLocalStorage, data } = useContext(DataContext)
   const [formData, setFormData] = useState({
     title: editData.title ?? '',
     description: editData.description ?? ''
@@ -19,7 +19,8 @@ const AddNewData = () => {
     }
     // best option
     const createNewPostUrl = `${URL}/posts`
-    const updatePostUrl = `${URL}/posts/${editData.id}`
+    const id = editData.id === 1 ? editData.id : 100 // This 'cause editData.id === 0 OR 101 do not exist 
+    const updatePostUrl = `${URL}/posts/${id}`
     const finalUrl = editData.id ? updatePostUrl : createNewPostUrl
 
     const response = await fetch(finalUrl, {
@@ -33,18 +34,33 @@ const AddNewData = () => {
         'Content-type': 'application/json; charset=UTF-8',
       }
     })
-    const result = await response.json()
-    console.log(result)
+    await response.json()
 
     // option 2
     if(editData.id) {
-      // update localStorage
-      console.log('hola')
+      const allData = data.map(data => {
+        const isSameID = data.id === editData.id
+        if (isSameID) {
+          return {
+            ...data,
+            title: formData.title,
+            body: formData.description
+          };
+        }
+        return data;
+      })
+      window.localStorage.setItem('data', JSON.stringify(allData.slice(0, 100)))
+      window.localStorage.setItem('new-data', JSON.stringify(allData.slice(100)))
+      setDataFromLocalStorage(allData)
     } else {
-      const newData = JSON.parse(window.localStorage.getItem('new-data')) || []
-      const addNewData = [{...formData, id: (newData.length ? newData.at(-1)[0].id : 100) + 1}]
-      newData.push(addNewData)
-      window.localStorage.setItem('new-data', JSON.stringify(newData))
+      const addNewData = {
+        title: formData.title,
+        body: formData.description,
+        id: data.at(-1).id + 1, 
+        userId: 11
+      }
+      window.localStorage.setItem('new-data', JSON.stringify([...data.slice(100), addNewData]))
+      setDataFromLocalStorage([...data, addNewData])
     }
     setFormData({ title: '', description: '' })
     setEditData({title: '', description: '', id: ''})
