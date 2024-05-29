@@ -19,7 +19,7 @@ const Header = () => {
         />
         <SearchICon />
       </div>
-      <Button onClick={() => setAddNewData(true)} size='small' variant='outlined' >Add New Data</Button>
+      <Button onClick={() => setAddNewData(true)} size='small' variant='contained'><b>+</b> Add New Row</Button>
     </div>
   )
 }

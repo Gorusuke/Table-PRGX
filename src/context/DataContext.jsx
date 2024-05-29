@@ -8,6 +8,8 @@ export const DataContext = createContext();
 export const GetDataContext = ({ children }) => {
   const [search, setSearch] = useState('')
   const [addNewData, setAddNewData] = useState(false)
+  const [showDataDetails, setShowDataDetails] = useState(false);
+  const [rowDetails, setRowDetails] = useState({});
   const [debounceValue] = useDebounce(search, 500)
   const { data, loading } = useGetData({ search: debounceValue })
   const [editData, setEditData] = useState({
@@ -23,6 +25,10 @@ export const GetDataContext = ({ children }) => {
       addNewData, 
       search,
       editData,
+      showDataDetails,
+      rowDetails,
+      setRowDetails,
+      setShowDataDetails,
       setSearch,
       setAddNewData,
       setEditData
