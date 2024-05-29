@@ -12,7 +12,7 @@ import { EditICon, TrashICon } from '../icons/AllIcons.jsx';
 import { URL } from '../constants.js';
 
 const DataTable = () => {
-  const { data, setAddNewData, setEditData} = useContext(DataContext)
+  const { data, setAddNewData, setEditData, setShowDataDetails, setRowDetails } = useContext(DataContext)
   const [rowsPerPage, setRowsPerPage] = useState(15);
   const [page, setPage] = useState(0);
 
@@ -25,7 +25,10 @@ const DataTable = () => {
     setPage(0);
   };
 
-  const handleDeleteRow = async (id) => {
+  const handleDeleteRow = async (e, id) => {
+    e.stopPropagation()
+    e.preventDefault()
+
     // best option
     await fetch(`${URL}/posts/${id}`, { method: 'DELETE' });
 
@@ -35,7 +38,9 @@ const DataTable = () => {
     console.log(filteredData)
   }
 
-  const handleEditRow = (row) => {
+  const handleEditRow = (e, row) => {
+    e.stopPropagation()
+    e.preventDefault()
     setAddNewData(true)
     setEditData({
       title: row.title,
@@ -44,35 +49,49 @@ const DataTable = () => {
     })
   }
 
+  const handleShowDataDetails = (rowData) => {
+    setShowDataDetails(true)
+    setRowDetails(rowData)
+  }
+
   const dataPerPage = data.slice(page * rowsPerPage, rowsPerPage * (page + 1))
+
+  const ellipsiStyles = {
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    padding: '8px'
+  }
 
   return (
     <Paper sx={{ width: '1000px' }}>
       <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} size='small' aria-label="simple table">
-        <TableHead>
+        <TableHead >
           <TableRow>
-            <TableCell>ID</TableCell>
-            <TableCell align="center">Title</TableCell>
-            <TableCell align="center">Description</TableCell>
-            <TableCell align="center">Actions</TableCell>
+            <TableCell style={{fontSize: '14px', fontWeight: '600', padding: '12px 8px'}}>ID</TableCell>
+            <TableCell style={{fontSize: '14px', fontWeight: '600', padding: '12px 8px', width: '200px'}} className='title' align="left">Title</TableCell>
+            <TableCell style={{fontSize: '14px', fontWeight: '600', padding: '12px 8px', width: '550px'}} className='description' align="left">Description</TableCell>
+            <TableCell style={{fontSize: '14px', fontWeight: '600', padding: '12px 8px'}} align="center">Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {dataPerPage.map((row) => (
             <TableRow
+              style={{cursor: 'pointer'}}
               key={row.id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+              onClick={() => handleShowDataDetails(row)}
             >
               <TableCell component="th" scope="row">{row.id}</TableCell>
-              <TableCell align="left">{row.title}</TableCell>
-              <TableCell align="center">{row.body.slice(0, 20)}</TableCell>
+              <TableCell style={{...ellipsiStyles, maxWidth: '250px'}} align="left">{row.title}</TableCell>
+              <TableCell style={{...ellipsiStyles, maxWidth: '550px'}} align="left">{row.body}</TableCell>
               <TableCell align="center">
                 <Stack direction='row' spacing={1}>
-                  <IconButton onClick={() => handleEditRow(row)} size='small' color='secondary' aria-label='update row'>
+                  <IconButton onClick={(e) => handleEditRow(e, row)} size='small' color='secondary' aria-label='update row'>
                     <EditICon />
                   </IconButton>
-                  <IconButton onClick={() => handleDeleteRow(row.id)} size='small' color='error' aria-label='eliminate row'>
+                  <IconButton onClick={(e) => handleDeleteRow(e, row.id)} size='small' color='error' aria-label='eliminate row'>
                     <TrashICon />
                   </IconButton>
                 </Stack>
@@ -92,7 +111,6 @@ const DataTable = () => {
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
     </Paper>
-
   )
 }
 
