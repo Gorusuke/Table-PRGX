@@ -97,8 +97,8 @@ const AddNewData = () => {
           />
         </div>
         <div className='buttons-container'>
-          <Button size='small' color='error' variant='contained' onClick={handleCancel}>Cancelar</Button>
-          <Button size='small' variant='contained' onClick={handleOnSubmit}>Enviar</Button>
+          <Button size='small' color='error' variant='contained' onClick={handleCancel}>Cancel</Button>
+          <Button size='small' variant='contained' onClick={handleOnSubmit}>{editData.id ? 'Edit' : 'Send'}</Button>
         </div>
       </form>
     </>

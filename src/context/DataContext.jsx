@@ -13,9 +13,9 @@ export const GetDataContext = ({ children }) => {
   const [debounceValue] = useDebounce(search, 500)
   const { data, loading, setDataFromLocalStorage } = useGetData()
   const [editData, setEditData] = useState({
-    title: '',
-    description: '',
-    id: ''
+    title: null,
+    description: null,
+    id: null
   })
   
   return (
