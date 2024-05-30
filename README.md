@@ -1,9 +1,16 @@
 # Table-PRGX
 
+## Overview
+
 It is a table that renders an API. You can add new rows to the table and you can also delete or edit rows. <br>
 It has a pagination to be able to move between records and also a search engine in case you want to filter by title. 
 
-## Instalacion
+## Features
+- Add new rows
+- Delete rows
+- Edit rows
+
+## Installation
 To run the project locally, follow these steps:
 - Clone the project
 - Enter the main path of the project
